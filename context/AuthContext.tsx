@@ -12,7 +12,6 @@ export const authContext = createContext<{
 function AuthContextProvider() {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
-  const
   return <authContext.Provider value={{ session, user }}></authContext.Provider>
 }
 
