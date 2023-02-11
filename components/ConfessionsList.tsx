@@ -11,12 +11,29 @@ import React from 'react'
 import { Confession } from '../supabase/useConfessions'
 
 function ConfessionsList({ confessions }: { confessions: Confession[] }) {
-  const timestamp = `${new Date(
-    confessions[0].created_at
-  ).toLocaleTimeString()} ${new Date(
-    confessions[0].created_at
-  ).toLocaleDateString()}`
+  let timestamp: string
+  if (confessions.length > 0)
+    timestamp = `${new Date(
+      confessions[0].created_at
+    ).toLocaleTimeString()} ${new Date(
+      confessions[0].created_at
+    ).toLocaleDateString()}`
+
   const bgColor = useColorModeValue('gray.50', 'gray.700')
+  if (confessions.length === 0)
+    return (
+      <>
+        <Flex
+          border={'2px dashed grey'}
+          borderRadius={10}
+          h={150}
+          align={'center'}
+          justify={'center'}
+        >
+          <Text>No Confessions yet!</Text>
+        </Flex>
+      </>
+    )
   return (
     <Flex>
       <List w={'100%'}>
