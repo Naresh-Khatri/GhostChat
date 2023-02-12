@@ -23,6 +23,7 @@ import NLink from 'next/link'
 import supabase from '../supabase/supabase'
 import AccountSettingsModal from './AccountSettingsModal'
 import { User } from '../supabase/useUser'
+import Image from 'next/image'
 
 const NavLink = ({ children }) => (
   <Link
@@ -66,7 +67,12 @@ export default function Nav({ user }: NavProps) {
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box
+        bg={useColorModeValue('rgba(255,255,255,.6)', 'rgba(0,0,0,.6)')}
+        backdropFilter='auto'
+        backdropBlur='2px'
+        px={4}
+      >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box>
             <Text fontWeight={'extrabold'} fontSize='1.25em'>
@@ -96,16 +102,34 @@ export default function Nav({ user }: NavProps) {
                       cursor={'pointer'}
                       minW={0}
                     >
-                      <Avatar size={'sm'} src={''} />
+                      <Image
+                        aria-label='User avatar'
+                        alt='User avatar'
+                        src={user.avatar_url || ''}
+                        width={40}
+                        height={40}
+                        style={{ borderRadius: '50%' }}
+                      />
                     </MenuButton>
+
                     <MenuList alignItems={'center'}>
                       <br />
                       <Center>
-                        <Avatar size={'2xl'} src={''} />
+                        <Image
+                          aria-label='User avatar'
+                          alt='User avatar'
+                          src={user.avatar_url || ''}
+                          width={150}
+                          height={150}
+                          style={{ borderRadius: '50%' }}
+                        />
                       </Center>
                       <br />
-                      <Center>
-                        <p>{user.full_name}</p>
+                      <Center flexDirection={'column'}>
+                        <Text as={'p'}>{user.full_name}</Text>
+                        <Text as={'p'} fontSize={'sm'} color={'gray.400'}>
+                          @{user.username}
+                        </Text>
                       </Center>
                       <br />
                       <MenuDivider />
