@@ -31,9 +31,11 @@ const Home = () => {
             anonymous messaging with [lskfjlsjdf].
           </Text>
           <Stack spacing={6} direction={'row'}>
-            <Button rounded={'full'} px={6}>
-              Learn more
-            </Button>
+            <Link href={'/login'}>
+              <Button rounded={'full'} px={6}>
+                Login
+              </Button>
+            </Link>
             <Link href={'/signup'}>
               <Button
                 rounded={'full'}
@@ -41,7 +43,7 @@ const Home = () => {
                 colorScheme={'green'}
                 _hover={{ bg: 'orange.500' }}
               >
-                Create your link
+                Sign up
               </Button>
             </Link>
           </Stack>
