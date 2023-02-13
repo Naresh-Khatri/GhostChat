@@ -18,8 +18,10 @@
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
     "framer-motion": "^9.0.2",
+    "html-to-image": "^1.11.11",
     "next": "13.1.6",
     "react": "18.2.0",
+    "react-cropper": "^2.1.8",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1"
   },
