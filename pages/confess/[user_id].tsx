@@ -6,6 +6,8 @@ import {
   Container,
   Text,
   Textarea,
+  useColorMode,
+  useColorModeValue,
   useToast,
   VStack,
 } from '@chakra-ui/react'
@@ -18,6 +20,10 @@ import { User } from '../../supabase/useUser'
 function ConfessPage() {
   const router = useRouter()
   const toast = useToast()
+
+  //TODO: enable dark mode
+  const { colorMode, toggleColorMode } = useColorMode()
+  if (colorMode === 'light') toggleColorMode()
 
   const [user, setUser] = useState<User>(null)
   const [error, setError] = useState<any>(null)
