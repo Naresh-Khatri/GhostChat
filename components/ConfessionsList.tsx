@@ -15,9 +15,12 @@ import { FaShare } from 'react-icons/fa'
 import { Confession } from '../supabase/useConfessions'
 import SimpleCard from './SimpleCard'
 import ShareConfessionModal from './ShareConfessionModal'
+import { useState } from 'react'
 
 function ConfessionsList({ confessions }: { confessions: Confession[] }) {
   const { isOpen, onClose, onOpen } = useDisclosure()
+  const [selectedConfession, setSelectedConfession] =
+    useState<Confession | null>(null)
   const textColor = useColorModeValue('gray.700', 'gray.100')
   const formatDateTime = (date: string) => {
     const formattedTime = `${new Date(date).getHours()}:${new Date(
@@ -42,11 +45,16 @@ function ConfessionsList({ confessions }: { confessions: Confession[] }) {
       </>
     )
   const handleShareMessage = (confession: Confession) => {
+    setSelectedConfession(confession)
     onOpen()
   }
   return (
     <Flex>
-      <ShareConfessionModal isOpen={isOpen} onClose={onClose} />
+      <ShareConfessionModal
+        isOpen={isOpen}
+        onClose={onClose}
+        confession={selectedConfession}
+      />
       <List w={'100%'}>
         {confessions.map((confession) => (
           <ListItem key={confession.id}>
@@ -61,7 +69,11 @@ function ConfessionsList({ confessions }: { confessions: Confession[] }) {
                 icon={<FaShare />}
                 onClick={() => handleShareMessage(confession)}
               />
-              <Grid templateColumns={'repeat(5, 1fr)'} gap={3}>
+              <Grid
+                templateColumns={'repeat(5, 1fr)'}
+                gap={3}
+                onClick={() => handleShareMessage(confession)}
+              >
                 <GridItem colSpan={1}>
                   <Flex direction={'column'} align={'center'}>
                     <Avatar />
