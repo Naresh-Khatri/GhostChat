@@ -28,12 +28,11 @@ export default function Dashboard({}) {
     error: confessionsHasError,
     loading: confessionsIsLoading,
   } = useConfessions()
-
-  const router = useRouter()
-  const bgColor = useColorModeValue('gray.200', 'gray.700')
-
-  const toast = useToast()
   const { onCopy, setValue } = useClipboard('')
+
+  const textColor = useColorModeValue('gray.800', 'white')
+  const router = useRouter()
+  const toast = useToast()
 
   const handleCodeCopyClick = () => {
     if (typeof window !== 'undefined') {
@@ -98,6 +97,7 @@ export default function Dashboard({}) {
             align={'center'}
             direction='column'
             justify={'center'}
+            color={textColor}
             h={120}
             cursor='pointer'
             _active={{ outline: 'none', transform: 'scale(0.9)' }}
