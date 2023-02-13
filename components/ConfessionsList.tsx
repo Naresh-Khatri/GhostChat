@@ -20,7 +20,12 @@ import { useState } from 'react'
 function ConfessionsList({ confessions }: { confessions: Confession[] }) {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [selectedConfession, setSelectedConfession] =
-    useState<Confession | null>(null)
+    useState<Confession | null>({
+      text: '',
+      id: '',
+      created_at: '',
+      to_user: '',
+    })
   const textColor = useColorModeValue('gray.700', 'gray.100')
   const formatDateTime = (date: string) => {
     const formattedTime = `${new Date(date).getHours()}:${new Date(
