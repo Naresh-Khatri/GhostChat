@@ -14,10 +14,18 @@ function useConfessions() {
 
   useEffect(() => {
     const fetchConfessions = async () => {
+      const { data: userData, error: userError } = await supabase.auth.getUser()
+      //user not logged in
+      if (userError) {
+        setError(userError.message)
+        console.log(userError)
+        setLoading(false)
+        return
+      }
       const { data, error } = await supabase
         .from('confessions')
         .select()
-        .eq('to_user', (await supabase.auth.getUser()).data.user.id)
+        .eq('to_user', userData?.user.id)
         .order('created_at', { ascending: false })
       if (error) {
         setError(error.message)
