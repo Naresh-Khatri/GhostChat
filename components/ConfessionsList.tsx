@@ -1,25 +1,29 @@
 import {
   Avatar,
-  Box,
+  Divider,
   Flex,
+  Grid,
+  GridItem,
+  IconButton,
   List,
   ListItem,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react'
-import React from 'react'
+import { FaShare } from 'react-icons/fa'
 import { Confession } from '../supabase/useConfessions'
+import SimpleCard from './SimpleCard'
 
 function ConfessionsList({ confessions }: { confessions: Confession[] }) {
-  let timestamp: string
-  if (confessions.length > 0)
-    timestamp = `${new Date(
-      confessions[0].created_at
-    ).toLocaleTimeString()} ${new Date(
-      confessions[0].created_at
-    ).toLocaleDateString()}`
+  const textColor = useColorModeValue('gray.700', 'gray.100')
+  const formatDateTime = (date: string) => {
+    const formattedTime = `${new Date(date).getHours()}:${new Date(
+      date
+    ).getMinutes()}`
+    const formattedDate = new Date(date).toDateString()
+    return { time: formattedTime, date: formattedDate }
+  }
 
-  const bgColor = useColorModeValue('gray.50', 'gray.700')
   if (confessions.length === 0)
     return (
       <>
@@ -30,39 +34,69 @@ function ConfessionsList({ confessions }: { confessions: Confession[] }) {
           align={'center'}
           justify={'center'}
         >
-          <Text>No Confessions yet!</Text>
+          <Text fontWeight={'extrabold'}>No Confessions yet!</Text>
         </Flex>
       </>
     )
+  const handleShareMessage = (confession: Confession) => {
+    console.log(confession)
+  }
   return (
     <Flex>
       <List w={'100%'}>
         {confessions.map((confession) => (
-          <ListItem
-            bg={bgColor}
-            borderRadius={12}
-            my={2}
-            p={5}
-            width='100%'
-            key={confession.id}
-          >
-            <Flex>
-              <Flex direction='column' align={'center'}>
-                <Avatar />
-                <Text
-                  mt={2}
-                  align={'center'}
-                  fontWeight={'light'}
-                  fontSize={'sm'}
-                  color={'gray.500'}
-                >
-                  {timestamp}
-                </Text>
-              </Flex>
-              <Text pl={2} fontWeight={'extrabold'}>
-                {confession.text}
-              </Text>
-            </Flex>
+          <ListItem key={confession.id}>
+            <SimpleCard maxW='100%'>
+              <IconButton
+                position={'absolute'}
+                right={3}
+                bottom={3}
+                size={'sm'}
+                color={textColor}
+                aria-label='share message'
+                icon={<FaShare />}
+              />
+              <Grid templateColumns={'repeat(5, 1fr)'} gap={3}>
+                <GridItem colSpan={1}>
+                  <Flex direction={'column'} align={'center'}>
+                    <Avatar />
+                    <Text
+                      mt={2}
+                      align={'center'}
+                      fontWeight={'light'}
+                      fontSize={'md'}
+                      color={'gray.300'}
+                    >
+                      {formatDateTime(confession.created_at).time}
+                    </Text>
+                    <Text
+                      align={'center'}
+                      fontWeight={'light'}
+                      fontSize={12}
+                      color={'gray.500'}
+                    >
+                      {formatDateTime(confession.created_at).date}
+                    </Text>
+                  </Flex>
+                </GridItem>
+                <GridItem colSpan={4}>
+                  <Flex w={'100%'}>
+                    <Divider orientation='vertical' h={'100'} />
+                    <Flex justify={'center'} align={'center'} w={'100%'}>
+                      <Text
+                        pl={2}
+                        fontWeight={'extrabold'}
+                        w={'100%'}
+                        align={'center'}
+                        color={textColor}
+                      >
+                        {confession.text}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                </GridItem>
+              </Grid>
+            </SimpleCard>
           </ListItem>
         ))}
       </List>
