@@ -18,17 +18,29 @@ import * as htmlToImage from 'html-to-image'
 import { useRef } from 'react'
 import dataURLtoFile from '../utils/dataURLtoFile'
 import supabase from '../supabase/supabase'
+import { Confession } from '../supabase/useConfessions'
 
-function ShareConfessionModal({ isOpen, onClose }) {
+interface ShareConfessionModalProps {
+  isOpen: boolean
+  onClose: () => void
+  confession: Confession
+}
+
+function ShareConfessionModal({
+  isOpen,
+  onClose,
+  confession,
+}: ShareConfessionModalProps) {
+  console.log(confession)
   const containerRef = useRef<HTMLDivElement>(null)
   const childRef = useRef<HTMLDivElement>(null)
   const toast = useToast()
 
   const makeShareImage = async () => {
     containerRef.current.style.width = '700px'
-    containerRef.current.style.height = '500px'
+    containerRef.current.style.height = '700px'
     childRef.current.style.width = '600px'
-    childRef.current.style.height = '400px'
+    childRef.current.style.height = '600px'
     const dataUrl = await htmlToImage.toPng(containerRef.current)
     containerRef.current.style.width = '100%'
     containerRef.current.style.height = '100%'
@@ -41,7 +53,7 @@ function ShareConfessionModal({ isOpen, onClose }) {
     const user = await supabase.auth.getUser()
     const shareObj = {
       title: 'Konfess your secrets anonymously',
-      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+      text: 'Konfess your secrets anonymously',
       files: [file],
       url: 'https://konfess.vercel.app/confess/' + user.data.user.id,
     }
@@ -66,7 +78,11 @@ function ShareConfessionModal({ isOpen, onClose }) {
         <ModalHeader>Share Confession</ModalHeader>
         <ModalCloseButton />
         <ModalBody p={0}>
-          <ShareContainer containerRef={containerRef} childRef={childRef} />
+          <ShareContainer
+            containerRef={containerRef}
+            childRef={childRef}
+            text={confession.text}
+          />
         </ModalBody>
 
         <ModalFooter>
@@ -89,9 +105,11 @@ function ShareConfessionModal({ isOpen, onClose }) {
 const ShareContainer = ({
   containerRef,
   childRef,
+  text,
 }: {
   containerRef: any
   childRef: any
+  text: string
 }) => {
   return (
     <Flex
@@ -128,12 +146,13 @@ const ShareContainer = ({
           fontWeight={'bold'}
           align='center'
         >
-          lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+          {text}
+          {/* lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
           tincidunt, nisl eget aliquam tincidunt, nisl nisl aliquam lorem, nec
-          aliquam nisl nisl eget nisl. Donec tincidunt, nisl eget aliquam
+          aliquam nisl nisl eget nisl. Donec tincidunt, nisl eget aliquam */}
         </Text>
 
-        <HStack mt={10} w={'100%'} justify={'start'}>
+        <HStack mt={10} w={'100%'} justify={'space-between'}>
           <Image
             aria-label='User avatar'
             alt='User avatar'
@@ -144,7 +163,7 @@ const ShareContainer = ({
             height={85}
             style={{ borderRadius: '50%' }}
           />
-          <Text color={'gray.500'}>sent by anonymous user</Text>
+          <Text color={'gray.500'}>- sent by anonymous user</Text>
           {/* <Text color={'gray.500'}>@naresh</Text> */}
         </HStack>
       </Flex>
