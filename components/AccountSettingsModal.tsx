@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -20,26 +21,50 @@ import useUser from '../supabase/useUser'
 function AccountSettingsModal({ isOpen, onClose }) {
   const { user, refreshUser } = useUser()
   const [fullName, setFullName] = useState<string>('')
+  const [username, setUsername] = useState<string>('')
+  const [usernameError, setusernameError] = useState<string>('')
   const [email, setEmail] = useState<string>('')
 
   const toast = useToast()
   useEffect(() => {
     if (user) {
-      console.log(user)
       setFullName(user.full_name)
       setEmail(user.email)
+      setUsername(user.username)
     }
   }, [user])
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (username.trim().length <= 5) {
+        setusernameError('Username must be at least 5 characters long')
+        return
+      }
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .ilike('username', username)
+      console.log(data, error)
+      if (data.length >= 1) setusernameError('username already exist.')
+      else setusernameError('')
+    }, 500)
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [username])
 
   if (!user) return null
 
-  const infoChanged = fullName !== user.full_name || email !== user.email
+  const infoChanged =
+    fullName !== user.full_name ||
+    email !== user.email ||
+    username !== user.username
+
   const handleUserInfoUpdate = async () => {
-    console.log('update user info')
     const { data, error } = await supabase
       .from('profiles')
       .update({
         full_name: fullName,
+        username,
         email,
       })
       .eq('id', user.id)
@@ -82,6 +107,19 @@ function AccountSettingsModal({ isOpen, onClose }) {
                 onChange={(e) => setFullName(e.target.value)}
               />
             </FormControl>
+            <FormControl id='name' isRequired>
+              <FormLabel>username</FormLabel>
+              <Input
+                placeholder='your name'
+                _placeholder={{ color: 'gray.500' }}
+                type='text'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              {infoChanged && usernameError && (
+                <FormHelperText color='red.500'>{usernameError}</FormHelperText>
+              )}
+            </FormControl>
             <FormControl id='email' isRequired>
               <FormLabel>Email</FormLabel>
               <Input disabled type='email' value={email} readOnly />
@@ -94,8 +132,9 @@ function AccountSettingsModal({ isOpen, onClose }) {
           </Button>
           <Button
             colorScheme={'blue'}
-            isDisabled={!infoChanged}
-            // opacity={infoChanged ? 1 : 0.5}
+            isDisabled={
+              !infoChanged || !!usernameError || !username || !fullName
+            }
             mr={3}
             onClick={handleUserInfoUpdate}
           >
