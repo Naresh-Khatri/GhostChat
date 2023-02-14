@@ -17,12 +17,13 @@ import {
 import Image from 'next/image'
 import { FaWhatsapp } from 'react-icons/fa'
 import * as htmlToImage from 'html-to-image'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import dataURLtoFile from '../utils/dataURLtoFile'
 import supabase from '../supabase/supabase'
 import { Confession } from '../supabase/useConfessions'
 import Logo from './Logo'
 import sleep from '../utils/sleep'
+import useUser from '../supabase/useUser'
 
 interface ShareConfessionModalProps {
   isOpen: boolean
@@ -36,6 +37,7 @@ function ShareConfessionModal({
   confession,
 }: ShareConfessionModalProps) {
   // console.log(confession)
+  const { user } = useUser()
   const containerRef = useRef<HTMLDivElement>(null)
   const [captureModeOn, setCaptureModeOn] = useState<boolean>(false)
   const toast = useToast()
@@ -49,12 +51,11 @@ function ShareConfessionModal({
   }
   const handleOnShareClick = async () => {
     const file = await makeShareImage()
-    const user = await supabase.auth.getUser()
     const shareObj = {
       title: 'Konfess your secrets anonymously',
       text: 'Konfess your secrets anonymously',
       files: [file],
-      url: 'https://konfess.vercel.app/confess/' + user.data.user.id,
+      url: 'https://konfess.vercel.app/confess/' + user.id,
     }
     if (navigator.share) {
       navigator.share(shareObj)
@@ -113,6 +114,8 @@ const ShareContainer = ({
   captureModeOn: boolean
   text: string
 }) => {
+  const { user } = useUser()
+  console.log(user)
   return (
     <Flex
       justify={'center'}
@@ -126,62 +129,62 @@ const ShareContainer = ({
       bgGradient='radial-gradient(circle, rgba(71,169,255,1) 0%, rgba(50,100,203,1) 60%, rgba(41,128,205,1) 100%);'
       p={'1em 2em'}
     >
-      <Flex
-        justify={'center'}
-        align={'center'}
-        bg={'white'}
-        minH={300}
-        h={captureModeOn ? '600px' : '100%'}
-        w={captureModeOn ? '600px' : '100%'}
-        boxShadow={'2xl'}
-        p={10}
-        direction='column'
-        justifyContent={'space-between'}
-        borderRadius={50}
-      >
-        {!captureModeOn && <Box></Box>}
-        <VStack spacing={0} display={captureModeOn ? 'flex' : 'none'}>
-          <Logo size={45} color={'dark'} />
-          <Text color={'gray.800'} fontWeight={'extrabold'} fontSize={'lg'}>
-            GhostChat
-          </Text>
-        </VStack>
-        <Flex pos={'relative'}>
-          <Text
-            pos={'absolute'}
-            justifySelf={'end'}
-            color={'rgba(71,169,255,1)'}
-            fontSize='9xl'
-            left={-100}
-            top={-100}
-          >
-            {/* &ldquo; */}
-          </Text>
-          <Text
-            color={'gray.700'}
-            fontSize={captureModeOn ? '3xl' : 'xl'}
-            fontWeight={'bold'}
-            align='center'
-          >
-            {text}
-          </Text>
-        </Flex>
+      {user && (
+        <Flex
+          justify={'center'}
+          align={'center'}
+          bg={'white'}
+          minH={300}
+          h={captureModeOn ? '600px' : '100%'}
+          w={captureModeOn ? '600px' : '100%'}
+          boxShadow={'2xl'}
+          p={10}
+          direction='column'
+          justifyContent={'space-between'}
+          borderRadius={50}
+        >
+          {!captureModeOn && <Box></Box>}
+          <VStack spacing={0} display={captureModeOn ? 'flex' : 'none'}>
+            <Logo size={45} color={'dark'} />
+            <Text color={'gray.800'} fontWeight={'extrabold'} fontSize={'lg'}>
+              GhostChat
+            </Text>
+          </VStack>
+          <Flex pos={'relative'}>
+            <Text
+              pos={'absolute'}
+              justifySelf={'end'}
+              color={'rgba(71,169,255,1)'}
+              fontSize='9xl'
+              left={-100}
+              top={-100}
+            >
+              {/* &ldquo; */}
+            </Text>
+            <Text
+              color={'gray.700'}
+              fontSize={captureModeOn ? '3xl' : 'xl'}
+              fontWeight={'bold'}
+              align='center'
+            >
+              {text}
+            </Text>
+          </Flex>
 
-        <HStack w={'100%'} justify={'space-between'}>
-          <Image
-            aria-label='User avatar'
-            alt='User avatar'
-            src={
-              'https://nmqxuusjichhgaiprapu.supabase.co/storage/v1/object/public/avatars/public/nareshjdjdjdjdjdjdjdjdjdjdjdj_1676271771209_avatar.png'
-            }
-            width={captureModeOn ? 85 : 50}
-            height={captureModeOn ? 85 : 50}
-            style={{ borderRadius: '50%' }}
-          />
-          <Text color={'gray.500'}>- sent by anonymous user</Text>
-        </HStack>
-        {/* <Text color={'gray.500'}>@naresh</Text> */}
-      </Flex>
+          <HStack w={'100%'} justify={'space-between'}>
+            <Image
+              aria-label='User avatar'
+              alt='User avatar'
+              src={user.avatar_url}
+              width={captureModeOn ? 85 : 50}
+              height={captureModeOn ? 85 : 50}
+              style={{ borderRadius: '50%' }}
+            />
+            <Text color={'gray.500'}>- sent by anonymous user</Text>
+          </HStack>
+          {/* <Text color={'gray.500'}>@naresh</Text> */}
+        </Flex>
+      )}
     </Flex>
   )
 }
