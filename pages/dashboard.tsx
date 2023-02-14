@@ -193,6 +193,7 @@ const ShareContainer = ({
   photoUrl: string
   captureModeOn: boolean
 }) => {
+  const { user } = useUser()
   return (
     <>
       {captureModeOn && (
@@ -208,75 +209,81 @@ const ShareContainer = ({
           bgGradient='radial-gradient(circle, rgba(71,169,255,1) 0%, rgba(50,100,203,1) 60%, rgba(41,128,205,1) 100%);'
           p={'1em 2em'}
         >
-          <Flex
-            justify={'center'}
-            align={'center'}
-            bg={'white'}
-            minH={300}
-            h={captureModeOn ? '600px' : '100%'}
-            w={captureModeOn ? '600px' : '100%'}
-            boxShadow={'2xl'}
-            p={10}
-            direction='column'
-            justifyContent={'space-between'}
-            borderRadius={50}
-          >
-            {!captureModeOn && <Box></Box>}
-            <VStack spacing={0} display={captureModeOn ? 'flex' : 'none'}>
-              <Logo size={45} color={'dark'} />
-              <Text color={'gray.800'} fontWeight={'extrabold'} fontSize={'lg'}>
-                GhostChat
-              </Text>
-            </VStack>
-            <Flex pos={'relative'}>
-              <Text
-                pos={'absolute'}
-                justifySelf={'end'}
-                color={'rgba(71,169,255,1)'}
-                fontSize='9xl'
-                left={-100}
-                top={-100}
-              >
-                {/* &ldquo; */}
-              </Text>
-              <Flex>
+          {user && (
+            <Flex
+              justify={'center'}
+              align={'center'}
+              bg={'white'}
+              minH={300}
+              h={captureModeOn ? '600px' : '100%'}
+              w={captureModeOn ? '600px' : '100%'}
+              boxShadow={'2xl'}
+              p={10}
+              direction='column'
+              justifyContent={'space-between'}
+              borderRadius={50}
+            >
+              {!captureModeOn && <Box></Box>}
+              <VStack spacing={0} display={captureModeOn ? 'flex' : 'none'}>
+                <Logo size={45} color={'dark'} />
                 <Text
-                  color={'gray.700'}
-                  fontSize={captureModeOn ? '3xl' : 'xl'}
-                  fontWeight={'bold'}
-                  align='center'
+                  color={'gray.800'}
+                  fontWeight={'extrabold'}
+                  fontSize={'lg'}
                 >
-                  Is there something you would like to share with me{' '}
+                  GhostChat
+                </Text>
+              </VStack>
+              <Flex pos={'relative'}>
+                <Text
+                  pos={'absolute'}
+                  justifySelf={'end'}
+                  color={'rgba(71,169,255,1)'}
+                  fontSize='9xl'
+                  left={-100}
+                  top={-100}
+                >
+                  {/* &ldquo; */}
+                </Text>
+                <Flex>
                   <Text
                     color={'gray.700'}
-                    as={'span'}
                     fontSize={captureModeOn ? '3xl' : 'xl'}
                     fontWeight={'bold'}
                     align='center'
-                    // bgGradient={'linear(to-l, #669DEE 0%, #121FCF 100%)'}
-                    // bgClip='text'
                   >
-                    anonymously
+                    Is there something you would like to share with me{' '}
+                    <Text
+                      color={'gray.700'}
+                      as={'span'}
+                      fontSize={captureModeOn ? '3xl' : 'xl'}
+                      fontWeight={'bold'}
+                      align='center'
+                      // bgGradient={'linear(to-l, #669DEE 0%, #121FCF 100%)'}
+                      // bgClip='text'
+                    >
+                      anonymously
+                    </Text>
+                    ?
                   </Text>
-                  ?
-                </Text>
+                </Flex>
               </Flex>
-            </Flex>
 
-            <VStack w={'100%'} align={'end'} justify='center'>
-              <Flex direction={'column'} align='center'>
-                <Image
-                  aria-label='User avatar'
-                  alt='User avatar'
-                  src={photoUrl}
-                  width={captureModeOn ? 85 : 50}
-                  height={captureModeOn ? 85 : 50}
-                  style={{ borderRadius: '50%' }}
-                />
-                <Text color={'gray.500'}>@naresh</Text>
-              </Flex>
-            </VStack>
-          </Flex>
+              <VStack w={'100%'} align={'end'} justify='center'>
+                <Flex direction={'column'} align='center'>
+                  <Image
+                    aria-label='User avatar'
+                    alt='User avatar'
+                    src={photoUrl}
+                    width={captureModeOn ? 85 : 50}
+                    height={captureModeOn ? 85 : 50}
+                    style={{ borderRadius: '50%' }}
+                  />
+                  <Text color={'gray.500'}>@{user.username}</Text>
+                </Flex>
+              </VStack>
+            </Flex>
+          )}
         </Flex>
       )}
       {/* <Button onClick={downloadImage}> Download</Button> */}
