@@ -14,13 +14,28 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import SimpleCard from '../components/SimpleCard'
 import supabase from '../supabase/supabase'
+import useUser from '../supabase/useUser'
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>('')
+  const { user } = useUser()
   const [password, setPassword] = useState('')
 
   const toast = useToast()
   const router = useRouter()
+  //TODO: why is useEffect running twice?
+  useEffect(() => {
+    if (router.isReady && user) {
+      router.push('/dashboard')
+      toast({
+        title: 'Already logged in.',
+        description: "You're already logged in.",
+        status: 'info',
+        duration: 9000,
+        isClosable: true,
+      })
+    }
+  }, [user, router.isReady, toast, router])
   const handleLoginBtnClick = async () => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
