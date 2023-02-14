@@ -11,6 +11,7 @@ import {
   IconButton,
   Input,
   Stack,
+  useColorMode,
   useColorModeValue,
   useToast,
 } from '@chakra-ui/react'
@@ -26,6 +27,10 @@ import dataURLtoFile from '../utils/dataURLtoFile'
 import ImageUploader from '../components/ImageUploader'
 import useUser from '../supabase/useUser'
 export default function SignUpPage() {
+  //TODO: enable dark mode
+  const { colorMode, toggleColorMode } = useColorMode()
+  if (colorMode === 'light') toggleColorMode()
+
   const [formStepCount, setFormStepCount] = useState<number>(0)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
