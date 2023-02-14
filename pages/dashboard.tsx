@@ -107,7 +107,7 @@ export default function Dashboard({}) {
             <HStack>
               <Icon as={CopyIcon} fontSize={'2xl'} />
               <Text fontWeight={'extrabold'} fontSize='xl'>
-                Copy your link!
+                Share your link!
               </Text>
             </HStack>
             <HStack mt={5}>
