@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Flex,
   HStack,
@@ -11,14 +12,16 @@ import {
   ModalOverlay,
   Text,
   useToast,
+  VStack,
 } from '@chakra-ui/react'
 import Image from 'next/image'
 import { FaWhatsapp } from 'react-icons/fa'
 import * as htmlToImage from 'html-to-image'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import dataURLtoFile from '../utils/dataURLtoFile'
 import supabase from '../supabase/supabase'
 import { Confession } from '../supabase/useConfessions'
+import Logo from './Logo'
 
 interface ShareConfessionModalProps {
   isOpen: boolean
@@ -31,21 +34,15 @@ function ShareConfessionModal({
   onClose,
   confession,
 }: ShareConfessionModalProps) {
-  console.log(confession)
+  // console.log(confession)
   const containerRef = useRef<HTMLDivElement>(null)
-  const childRef = useRef<HTMLDivElement>(null)
+  const [captureModeOn, setCaptureModeOn] = useState<boolean>(false)
   const toast = useToast()
 
   const makeShareImage = async () => {
-    containerRef.current.style.width = '700px'
-    containerRef.current.style.height = '700px'
-    childRef.current.style.width = '600px'
-    childRef.current.style.height = '600px'
+    setCaptureModeOn(true)
     const dataUrl = await htmlToImage.toPng(containerRef.current)
-    containerRef.current.style.width = '100%'
-    containerRef.current.style.height = '100%'
-    childRef.current.style.width = '100%'
-    childRef.current.style.height = '100%'
+    setCaptureModeOn(false)
     return dataURLtoFile(dataUrl, 'confession.png')
   }
   const handleOnShareClick = async () => {
@@ -75,18 +72,21 @@ function ShareConfessionModal({
     <Modal isOpen={isOpen} onClose={onClose} size='2xl'>
       <ModalOverlay />
       <ModalContent mx={1}>
-        <ModalHeader>Share Confession</ModalHeader>
+        <ModalHeader bg={'rgba(50,100,203,1)'}>Share Confession</ModalHeader>
         <ModalCloseButton />
         <ModalBody p={0}>
           <ShareContainer
             containerRef={containerRef}
-            childRef={childRef}
             text={confession.text}
+            captureModeOn={captureModeOn}
           />
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter bg={'rgba(50,100,203,1)'}>
           <HStack spacing={2}>
+            {/* <Button onClick={() => setCaptureModeOn((p) => !p)}>
+              Toggle capture
+            </Button> */}
             <Button>Cancel</Button>
             <Button
               leftIcon={<FaWhatsapp fontSize={'25'} />}
@@ -104,20 +104,20 @@ function ShareConfessionModal({
 
 const ShareContainer = ({
   containerRef,
-  childRef,
+  captureModeOn,
   text,
 }: {
   containerRef: any
-  childRef: any
+  captureModeOn: boolean
   text: string
 }) => {
   return (
     <Flex
-      ref={containerRef}
       justify={'center'}
       align={'center'}
-      // h={600}
-      // w={700}
+      ref={containerRef}
+      h={captureModeOn ? '700px' : '100%'}
+      w={captureModeOn ? '700px' : '100%'}
       // bg='linear(to-l, #FCEABB 0%, #00FFE5 50%, #0099FF 51%, #FBDF93 100%)'
       // bg={'rgba(71,169,255,1)'}
       // bgGradient='linear(to-l, rgba(71,169,255,1) 0%, rgba(50,100,243,1) 50%, rgba(71,169,255,1) 100%)'
@@ -128,44 +128,57 @@ const ShareContainer = ({
         justify={'center'}
         align={'center'}
         bg={'white'}
-        ref={childRef}
-        // h={500}
-        // w={600}
+        minH={300}
+        h={captureModeOn ? '600px' : '100%'}
+        w={captureModeOn ? '600px' : '100%'}
         boxShadow={'2xl'}
         p={10}
         direction='column'
-        justifyContent={'center'}
+        justifyContent={'space-between'}
         borderRadius={50}
       >
-        <Text color={'rgba(71,169,255,1)'} fontSize='9xl' lineHeight={0.7}>
-          &ldquo;
-        </Text>
-        <Text
-          color={'gray.700'}
-          fontSize='xl'
-          fontWeight={'bold'}
-          align='center'
-        >
-          {text}
-          {/* lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          tincidunt, nisl eget aliquam tincidunt, nisl nisl aliquam lorem, nec
-          aliquam nisl nisl eget nisl. Donec tincidunt, nisl eget aliquam */}
-        </Text>
+        {!captureModeOn && <Box></Box>}
+        <VStack spacing={0} display={captureModeOn ? 'flex' : 'none'}>
+          <Logo size={45} color={'dark'} />
+          <Text color={'gray.800'} fontWeight={'extrabold'} fontSize={'lg'}>
+            GhostChat
+          </Text>
+        </VStack>
+        <Flex pos={'relative'}>
+          <Text
+            pos={'absolute'}
+            justifySelf={'end'}
+            color={'rgba(71,169,255,1)'}
+            fontSize='9xl'
+            left={-100}
+            top={-100}
+          >
+            {/* &ldquo; */}
+          </Text>
+          <Text
+            color={'gray.700'}
+            fontSize='xl'
+            fontWeight={'bold'}
+            align='center'
+          >
+            {text}
+          </Text>
+        </Flex>
 
-        <HStack mt={10} w={'100%'} justify={'space-between'}>
+        <HStack w={'100%'} justify={'space-between'}>
           <Image
             aria-label='User avatar'
             alt='User avatar'
             src={
               'https://nmqxuusjichhgaiprapu.supabase.co/storage/v1/object/public/avatars/public/nareshjdjdjdjdjdjdjdjdjdjdjdj_1676271771209_avatar.png'
             }
-            width={85}
-            height={85}
+            width={captureModeOn ? 85 : 50}
+            height={captureModeOn ? 85 : 50}
             style={{ borderRadius: '50%' }}
           />
           <Text color={'gray.500'}>- sent by anonymous user</Text>
-          {/* <Text color={'gray.500'}>@naresh</Text> */}
         </HStack>
+        {/* <Text color={'gray.500'}>@naresh</Text> */}
       </Flex>
     </Flex>
   )
