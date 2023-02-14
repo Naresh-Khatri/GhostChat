@@ -22,6 +22,7 @@ import dataURLtoFile from '../utils/dataURLtoFile'
 import supabase from '../supabase/supabase'
 import { Confession } from '../supabase/useConfessions'
 import Logo from './Logo'
+import sleep from '../utils/sleep'
 
 interface ShareConfessionModalProps {
   isOpen: boolean
@@ -39,8 +40,6 @@ function ShareConfessionModal({
   const [captureModeOn, setCaptureModeOn] = useState<boolean>(false)
   const toast = useToast()
 
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms))
   const makeShareImage = async () => {
     setCaptureModeOn(true)
     await sleep(200)
