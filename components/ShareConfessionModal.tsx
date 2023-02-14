@@ -39,20 +39,14 @@ function ShareConfessionModal({
   const [captureModeOn, setCaptureModeOn] = useState<boolean>(false)
   const toast = useToast()
 
+  const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms))
   const makeShareImage = async () => {
     setCaptureModeOn(true)
+    await sleep(200)
     const dataUrl = await htmlToImage.toPng(containerRef.current)
     setCaptureModeOn(false)
     return dataURLtoFile(dataUrl, 'confession.png')
-  }
-  const handleOnDownloadClick = async () => {
-    // const dataUrl = await makeShareImage()
-    const dataUrl = await htmlToImage.toPng(containerRef.current)
-    //download image
-    const link = document.createElement('a')
-    link.download = 'confession.png'
-    link.href = dataUrl
-    link.click()
   }
   const handleOnShareClick = async () => {
     const file = await makeShareImage()
@@ -93,7 +87,6 @@ function ShareConfessionModal({
 
         <ModalFooter bg={'rgba(50,100,203,1)'}>
           <HStack spacing={2}>
-            <Button onClick={handleOnDownloadClick}>Download</Button>
             {/* <Button onClick={() => setCaptureModeOn((p) => !p)}>
               Toggle capture
             </Button> */}
@@ -167,7 +160,7 @@ const ShareContainer = ({
           </Text>
           <Text
             color={'gray.700'}
-            fontSize='xl'
+            fontSize={captureModeOn ? '3xl' : 'xl'}
             fontWeight={'bold'}
             align='center'
           >
