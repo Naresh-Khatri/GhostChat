@@ -253,8 +253,8 @@ const ShareContainer = ({
                     fontSize={captureModeOn ? '3xl' : 'xl'}
                     fontWeight={'bold'}
                     align='center'
-                    bgGradient={'linear(to-l, #669DEE 0%, #121FCF 100%)'}
-                    bgClip='text'
+                    // bgGradient={'linear(to-l, #669DEE 0%, #121FCF 100%)'}
+                    // bgClip='text'
                   >
                     anonymously
                   </Text>
