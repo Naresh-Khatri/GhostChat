@@ -45,6 +45,15 @@ function ShareConfessionModal({
     setCaptureModeOn(false)
     return dataURLtoFile(dataUrl, 'confession.png')
   }
+  const handleOnDownloadClick = async () => {
+    // const dataUrl = await makeShareImage()
+    const dataUrl = await htmlToImage.toPng(containerRef.current)
+    //download image
+    const link = document.createElement('a')
+    link.download = 'confession.png'
+    link.href = dataUrl
+    link.click()
+  }
   const handleOnShareClick = async () => {
     const file = await makeShareImage()
     const user = await supabase.auth.getUser()
@@ -84,6 +93,7 @@ function ShareConfessionModal({
 
         <ModalFooter bg={'rgba(50,100,203,1)'}>
           <HStack spacing={2}>
+            <Button onClick={handleOnDownloadClick}>Download</Button>
             {/* <Button onClick={() => setCaptureModeOn((p) => !p)}>
               Toggle capture
             </Button> */}
