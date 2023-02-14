@@ -71,7 +71,7 @@ export default function Nav({ user }: NavProps) {
   return (
     <>
       <Box
-        bg={useColorModeValue('rgba(255,255,255,.6)', 'rgba(0,0,0,.6)')}
+        bg={useColorModeValue('rgba(255,255,255,.6)', '#111928bf')}
         backdropFilter='auto'
         backdropBlur='2px'
         px={4}
