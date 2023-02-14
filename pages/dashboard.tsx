@@ -11,6 +11,7 @@ import {
   useClipboard,
   HStack,
   Box,
+  VStack,
 } from '@chakra-ui/react'
 
 import { FaInstagram, FaTelegram, FaTwitter, FaWhatsapp } from 'react-icons/fa'
@@ -20,6 +21,12 @@ import useConfessions from '../supabase/useConfessions'
 import SnapchatLogo from '../components/SnapchatLogo'
 import { CopyIcon } from '@chakra-ui/icons'
 import SimpleCard from '../components/SimpleCard'
+import Logo from '../components/Logo'
+import Image from 'next/image'
+import { useRef, useState } from 'react'
+import dataURLtoFile from '../utils/dataURLtoFile'
+import * as htmlToImage from 'html-to-image'
+import sleep from '../utils/sleep'
 
 export default function Dashboard({}) {
   const { user, error: userHasError, loading: userIsLoading } = useUser()
@@ -34,16 +41,28 @@ export default function Dashboard({}) {
   const router = useRouter()
   const toast = useToast()
 
-  const handleCodeCopyClick = () => {
+  const containerRef = useRef(null)
+  const [captureModeOn, setCaptureModeOn] = useState(false)
+
+  const makeShareImage = async () => {
+    setCaptureModeOn(true)
+    await sleep(200)
+    const dataUrl = await htmlToImage.toPng(containerRef.current)
+    setCaptureModeOn(false)
+    return dataURLtoFile(dataUrl, 'confession.png')
+  }
+  const handleCodeCopyClick = async () => {
     if (typeof window !== 'undefined') {
       const url = `${window.location.origin}/confess/${user.id}`
-      if (window.navigator.share)
+      if (window.navigator.share) {
+        const file = await makeShareImage()
         window.navigator.share({
-          title: 'Confess',
-          text: 'Confess your sins',
-          url,
+          title: 'Now heres your chance to confess your secrets anonymously',
+          text: 'Now heres your chance to confess your secrets anonymously',
+          files: [file],
+          url: url,
         })
-      else {
+      } else {
         setValue(url)
         onCopy()
         toast({
@@ -156,6 +175,111 @@ export default function Dashboard({}) {
         </Heading>
         <ConfessionsList confessions={confessions} />
       </Container>
+      <ShareContainer
+        containerRef={containerRef}
+        photoUrl={user.avatar_url}
+        captureModeOn={captureModeOn}
+      />
+    </>
+  )
+}
+
+const ShareContainer = ({
+  containerRef,
+  photoUrl,
+  captureModeOn,
+}: {
+  containerRef: any
+  photoUrl: string
+  captureModeOn: boolean
+}) => {
+  return (
+    <>
+      {captureModeOn && (
+        <Flex
+          justify={'center'}
+          align={'center'}
+          ref={containerRef}
+          h={captureModeOn ? '700px' : '100%'}
+          w={captureModeOn ? '700px' : '100%'}
+          // bg='linear(to-l, #FCEABB 0%, #00FFE5 50%, #0099FF 51%, #FBDF93 100%)'
+          // bg={'rgba(71,169,255,1)'}
+          // bgGradient='linear(to-l, rgba(71,169,255,1) 0%, rgba(50,100,243,1) 50%, rgba(71,169,255,1) 100%)'
+          bgGradient='radial-gradient(circle, rgba(71,169,255,1) 0%, rgba(50,100,203,1) 60%, rgba(41,128,205,1) 100%);'
+          p={'1em 2em'}
+        >
+          <Flex
+            justify={'center'}
+            align={'center'}
+            bg={'white'}
+            minH={300}
+            h={captureModeOn ? '600px' : '100%'}
+            w={captureModeOn ? '600px' : '100%'}
+            boxShadow={'2xl'}
+            p={10}
+            direction='column'
+            justifyContent={'space-between'}
+            borderRadius={50}
+          >
+            {!captureModeOn && <Box></Box>}
+            <VStack spacing={0} display={captureModeOn ? 'flex' : 'none'}>
+              <Logo size={45} color={'dark'} />
+              <Text color={'gray.800'} fontWeight={'extrabold'} fontSize={'lg'}>
+                GhostChat
+              </Text>
+            </VStack>
+            <Flex pos={'relative'}>
+              <Text
+                pos={'absolute'}
+                justifySelf={'end'}
+                color={'rgba(71,169,255,1)'}
+                fontSize='9xl'
+                left={-100}
+                top={-100}
+              >
+                {/* &ldquo; */}
+              </Text>
+              <Flex>
+                <Text
+                  color={'gray.700'}
+                  fontSize={captureModeOn ? '3xl' : 'xl'}
+                  fontWeight={'bold'}
+                  align='center'
+                >
+                  Is there something you would like to share with me{' '}
+                  <Text
+                    color={'gray.700'}
+                    as={'span'}
+                    fontSize={captureModeOn ? '3xl' : 'xl'}
+                    fontWeight={'bold'}
+                    align='center'
+                    bgGradient={'linear(to-l, #669DEE 0%, #121FCF 100%)'}
+                    bgClip='text'
+                  >
+                    anonymously
+                  </Text>
+                  ?
+                </Text>
+              </Flex>
+            </Flex>
+
+            <VStack w={'100%'} align={'end'} justify='center'>
+              <Flex direction={'column'} align='center'>
+                <Image
+                  aria-label='User avatar'
+                  alt='User avatar'
+                  src={photoUrl}
+                  width={captureModeOn ? 85 : 50}
+                  height={captureModeOn ? 85 : 50}
+                  style={{ borderRadius: '50%' }}
+                />
+                <Text color={'gray.500'}>@naresh</Text>
+              </Flex>
+            </VStack>
+          </Flex>
+        </Flex>
+      )}
+      {/* <Button onClick={downloadImage}> Download</Button> */}
     </>
   )
 }
