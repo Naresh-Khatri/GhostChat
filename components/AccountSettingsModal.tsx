@@ -43,7 +43,7 @@ function AccountSettingsModal({ isOpen, onClose }) {
         .from('profiles')
         .select('username')
         .ilike('username', username)
-      console.log(data, error)
+      // console.log(data, error)
       if (data.length >= 1) setusernameError('username already exist.')
       else setusernameError('')
     }, 500)
