@@ -19,16 +19,23 @@ const Home = () => {
             lineHeight={'110%'}
           >
             Start sending and receiving messages{' '}
-            <Text as={'span'} color={'green.400'}>
+            <Text
+              as={'span'}
+              // color={'blue.400'}
+              fontSize={{ base: '5xl', md: '6xl' }}
+              lineHeight={1.3}
+              bgGradient='linear(to-l, #FCEABB 0%, #00FFE5 50%, #0099FF 51%, #FBDF93 100%)'
+              bgClip={'text'}
+            >
               anonymously
             </Text>
           </Heading>
           <Text color={'gray.500'} maxW={'3xl'}>
-            [sdljfskjdf] is an instant messaging app that allows anonymous
+            GhostChat is an instant messaging app that allows anonymous
             communication. Send and receive honest messages with ease, free from
             judgement. Connect with others in a safe and secure environment.
             Join the millions of users who have discovered the power of
-            anonymous messaging with [lskfjlsjdf].
+            anonymous messaging with GhostChat.
           </Text>
           <Stack spacing={6} direction={'row'}>
             <Link href={'/login'}>
@@ -40,7 +47,7 @@ const Home = () => {
               <Button
                 rounded={'full'}
                 px={6}
-                colorScheme={'green'}
+                colorScheme={'blue'}
                 _hover={{ bg: 'orange.500' }}
               >
                 Sign up
