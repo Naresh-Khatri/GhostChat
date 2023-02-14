@@ -17,7 +17,6 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
-import { Cropper } from 'react-cropper'
 import SimpleCard from '../components/SimpleCard'
 import supabase from '../supabase/supabase'
 
@@ -25,6 +24,7 @@ import 'cropperjs/dist/cropper.css'
 import { ChevronLeftIcon, CloseIcon } from '@chakra-ui/icons'
 import dataURLtoFile from '../utils/dataURLtoFile'
 import ImageUploader from '../components/ImageUploader'
+import useUser from '../supabase/useUser'
 export default function SignUpPage() {
   const [formStepCount, setFormStepCount] = useState<number>(0)
   const [email, setEmail] = useState<string>('')
@@ -37,6 +37,21 @@ export default function SignUpPage() {
 
   const toast = useToast()
   const router = useRouter()
+  const { user } = useUser()
+
+  useEffect(() => {
+    console.log(user)
+    if (user) {
+      router.push('/dashboard')
+      toast({
+        title: 'Already logged in.',
+        description: "You're already logged in.",
+        status: 'info',
+        duration: 9000,
+        isClosable: true,
+      })
+    }
+  }, [user, router, toast])
 
   const handleSignUpClick = async () => {
     const { data, error } = await supabase.auth.signUp({ email, password })
@@ -237,6 +252,7 @@ const Form2 = ({
       return
     }
   }
+
   useEffect(() => {
     const timer = setTimeout(async () => {
       console.log('runnig')
