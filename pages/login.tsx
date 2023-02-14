@@ -6,6 +6,7 @@ import {
   Heading,
   Input,
   Stack,
+  useColorMode,
   useColorModeValue,
   useToast,
 } from '@chakra-ui/react'
@@ -17,6 +18,10 @@ import supabase from '../supabase/supabase'
 import useUser from '../supabase/useUser'
 
 export default function LoginPage() {
+  //TODO: enable dark mode
+  const { colorMode, toggleColorMode } = useColorMode()
+  if (colorMode === 'light') toggleColorMode()
+
   const [email, setEmail] = useState<string>('')
   const { user } = useUser()
   const [password, setPassword] = useState('')
