@@ -16,6 +16,8 @@ import {
   Center,
   useToast,
   Text,
+  HStack,
+  IconButton,
 } from '@chakra-ui/react'
 import { AddIcon, ChevronRightIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useRouter } from 'next/router'
@@ -24,6 +26,7 @@ import supabase from '../supabase/supabase'
 import AccountSettingsModal from './AccountSettingsModal'
 import { User } from '../supabase/useUser'
 import Image from 'next/image'
+import Logo from './Logo'
 
 const NavLink = ({ children }) => (
   <Link
@@ -74,24 +77,28 @@ export default function Nav({ user }: NavProps) {
         px={4}
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box>
+          <HStack align={'center'}>
+            <Logo size={40} />
             <Text fontWeight={'extrabold'} fontSize='1.25em'>
-              placeholder
+              GhostChat
             </Text>
-          </Box>
+          </HStack>
 
           {!user ? (
             <NLink href='/signup'>
-              <Button rightIcon={<ChevronRightIcon />} colorScheme={'green'}>
+              <Button rightIcon={<ChevronRightIcon />} colorScheme={'blue'}>
                 Create your link
               </Button>
             </NLink>
           ) : (
             <Flex alignItems={'center'}>
               <Stack direction={'row'} spacing={7}>
-                <Button onClick={toggleColorMode}>
-                  {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                </Button>
+                <IconButton
+                  aria-label='Toggle dark mode'
+                  rounded={'full'}
+                  icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                  onClick={toggleColorMode}
+                ></IconButton>
 
                 <Box>
                   <Menu>
