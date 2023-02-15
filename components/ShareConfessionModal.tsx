@@ -52,10 +52,10 @@ function ShareConfessionModal({
   const handleOnShareClick = async () => {
     const file = await makeShareImage()
     const shareObj = {
-      text: 'Some anonymous person sent me this',
-      title: 'Some anonymous person sent me this',
+      text: 'Some anonymous person sent me this on ghostchat',
+      title: 'Some anonymous person sent me this on ghostchat',
       files: [file],
-      url: 'https://konfess.vercel.app/confess/' + user.id,
+      url: 'https://ghostchat.live/confess/' + user.id,
     }
     if (navigator.share) {
       navigator.share(shareObj)
