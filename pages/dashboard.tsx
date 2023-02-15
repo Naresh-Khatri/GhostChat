@@ -57,8 +57,14 @@ export default function Dashboard({}) {
       if (window.navigator.share) {
         const file = await makeShareImage()
         window.navigator.share({
-          title: 'Now heres your chance to confess your secrets anonymously',
-          text: 'Now heres your chance to confess your secrets anonymously',
+          title: `Now heres your chance to confess your secrets anonymously
+         
+
+          `,
+          text: `Now heres your chance to confess your secrets anonymously
+          
+
+          `,
           files: [file],
           url: url,
         })
