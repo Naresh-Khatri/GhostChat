@@ -52,8 +52,8 @@ function ShareConfessionModal({
   const handleOnShareClick = async () => {
     const file = await makeShareImage()
     const shareObj = {
-      title: 'Konfess your secrets anonymously',
-      text: 'Konfess your secrets anonymously',
+      text: 'Some anonymous person sent me this',
+      title: 'Some anonymous person sent me this',
       files: [file],
       url: 'https://konfess.vercel.app/confess/' + user.id,
     }
